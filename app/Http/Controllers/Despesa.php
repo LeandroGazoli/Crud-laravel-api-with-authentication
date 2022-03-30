@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\api\responseController as responseController;
+use App\Mail\despesaEmail;
+use Illuminate\Support\Facades\Mail;
 
 class Despesa extends responseController
 {
@@ -48,6 +50,7 @@ class Despesa extends responseController
         $input['user_id'] = Auth::user()->id;
 
         $despesas = Despesas::create($input);
+        Mail::to(Auth::user()->email)->send(new despesaEmail($input));
 
         return $this->sendResponse(new DespesaResource($despesas), 'Despesa Cadastrada com sucesso');
     }
